@@ -1,11 +1,10 @@
 import React from "react";
+import Clientform from "./Components/ClientDetailsForm";
+// import "./index.css";
+import "./App.css";
 
 function App() {
-  return (
-    <div>
-      <h1>Hello</h1>
-    </div>
-  );
+  return <Clientform />;
 }
 
 export default App;
