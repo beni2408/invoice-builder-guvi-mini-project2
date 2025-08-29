@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import html2pdf from "html2pdf.js";
 import Sign from "../assets/Sign.png";
-
+import useInvoiceItems from "../Components/InvoiceDetails";
 function Clientform() {
   const [clientName, setClientName] = useState("");
   const [address, setAddress] = useState("");
@@ -10,48 +10,19 @@ function Clientform() {
   const [invoiceNo, setInvoiceNo] = useState("");
   const [date, setDate] = useState("");
 
+  const {
+    items,
+    handleAddRow,
+    handleChangeItem,
+    handleSaveItem,
+    handleEditItem,
+    handleRemoveItem,
+  } = useInvoiceItems();
+
   useEffect(() => {
     const uniqueNo = `INV-${Date.now()}`;
     setInvoiceNo(uniqueNo);
   }, []);
-
-  // ===== Items state & logic (unchanged) =====
-  const [items, setItems] = useState([]);
-
-  const handleAddRow = () => {
-    setItems((prev) => [
-      ...prev,
-      {
-        id: Date.now() + Math.random(),
-        description: "",
-        qty: "",
-        rate: "",
-        isEditing: true,
-      },
-    ]);
-  };
-
-  const handleChangeItem = (id, field, value) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, [field]: value } : it))
-    );
-  };
-
-  const handleSaveItem = (id) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, isEditing: false } : it))
-    );
-  };
-
-  const handleEditItem = (id) => {
-    setItems((prev) =>
-      prev.map((it) => (it.id === id ? { ...it, isEditing: true } : it))
-    );
-  };
-
-  const handleRemoveItem = (id) => {
-    setItems((prev) => prev.filter((it) => it.id !== id));
-  };
 
   const subtotal = useMemo(
     () =>
