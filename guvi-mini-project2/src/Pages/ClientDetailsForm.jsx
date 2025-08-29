@@ -121,7 +121,6 @@ function Clientform() {
 
   return (
     <>
-      {/* Main Builder UI */}
       <div
         ref={invoiceRef}
         className="flex flex-col justify-center w-full h-full items-start px-4 sm:px-10 md:px-20 pt-6 sm:pt-10 md:pt-12 bg-gradient-to-br from-gray-50 to-gray-100"
@@ -131,7 +130,6 @@ function Clientform() {
         </h1>
 
         <div className="shadow-2xl rounded-2xl w-full bg-white/90 backdrop-blur-lg p-6 sm:p-8 md:p-10 space-y-8 md:space-y-10 border border-gray-200">
-          {/* Client Details */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-semibold text-gray-600">
@@ -152,7 +150,7 @@ function Clientform() {
               <input
                 type="text"
                 value={invoiceNo}
-                readOnly // ✅ prevents manual editing
+                readOnly
                 className="mt-2 w-full h-12 border border-gray-300 px-4 rounded-xl shadow-sm bg-gray-100 cursor-not-allowed"
                 placeholder="Auto-generated"
               />
@@ -186,11 +184,17 @@ function Clientform() {
                 Phone
               </label>
               <input
-                type="text"
+                type="tel"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  if (/^[0-9+]*$/.test(value)) {
+                    setPhone(value);
+                  }
+                }}
                 className="mt-2 w-full h-12 border border-gray-300 px-4 rounded-xl shadow-sm focus:ring-2 focus:ring-sky-400 focus:outline-none"
-                placeholder="+91 9876543210"
+                placeholder="+91 98XXXXXXXX"
               />
             </div>
             <div>
@@ -200,19 +204,23 @@ function Clientform() {
               <input
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+
+                  if (/^[a-zA-Z0-9@._-]*$/.test(value)) {
+                    setEmail(value);
+                  }
+                }}
                 className="mt-2 w-full h-12 border border-gray-300 px-4 rounded-xl shadow-sm focus:ring-2 focus:ring-sky-400 focus:outline-none"
-                placeholder="example@mail.com"
+                placeholder="jascar@gmail.com"
               />
             </div>
           </div>
 
-          {/* Items */}
           <div className="flex flex-col gap-4">
             <p className="text-lg font-semibold text-gray-700">Items</p>
 
             <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden shadow-md">
-              {/* Header – 12-col grid for perfect alignment */}
               <div className="bg-gradient-to-r from-sky-50 to-indigo-50 px-4 sm:px-6 py-3 text-gray-700 font-semibold text-sm sm:text-base">
                 <div className="hidden sm:grid grid-cols-12 gap-4 items-center">
                   <p className="col-span-5">Product</p>
@@ -220,21 +228,17 @@ function Clientform() {
                   <p className="col-span-2">Unit Rate</p>
                   <p className="col-span-3">Amount / Actions</p>
                 </div>
-                {/* Mobile header hint */}
+
                 <div className="sm:hidden">Add / Edit Items</div>
               </div>
 
-              {/* Rows */}
               {items.map((it) =>
                 it.isEditing ? (
-                  // ===== Inline "Newitemform" (same logic, responsive) =====
                   <div
                     key={it.id}
                     className="px-4 sm:px-6 py-4 border-t bg-white"
                   >
-                    {/* Mobile: stacked; ≥sm: aligned to header grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center">
-                      {/* Product */}
                       <input
                         value={it.description}
                         onChange={(e) =>
@@ -244,7 +248,6 @@ function Clientform() {
                         placeholder="Product"
                       />
 
-                      {/* Qty */}
                       <input
                         value={it.qty}
                         onChange={(e) =>
@@ -268,7 +271,6 @@ function Clientform() {
                         placeholder="Unit Rate"
                       />
 
-                      {/* Amount (read-only) */}
                       <input
                         value={
                           Number.isFinite(Number(it.qty) * Number(it.rate))
@@ -280,7 +282,6 @@ function Clientform() {
                         placeholder="Amount"
                       />
 
-                      {/* Actions */}
                       <div className="col-span-1 sm:col-span-12 flex gap-2 sm:justify-end mt-1">
                         <button
                           type="button"
@@ -308,7 +309,6 @@ function Clientform() {
                     </div>
                   </div>
                 ) : (
-                  // ===== Display row – perfectly aligned under header =====
                   <div
                     key={it.id}
                     className="px-4 sm:px-6 py-4 border-t hover:bg-gray-50 transition"
@@ -343,7 +343,6 @@ function Clientform() {
                 )
               )}
 
-              {/* Add Item button */}
               <button
                 onClick={handleAddRow}
                 className="self-start mt-4 ml-4 sm:ml-6 bg-gradient-to-r from-sky-500 to-indigo-500 text-white px-4 sm:px-6 py-2 rounded-xl shadow hover:scale-105 transform transition mb-5"
@@ -353,7 +352,6 @@ function Clientform() {
             </div>
           </div>
 
-          {/* Totals + Buttons */}
           <div className="flex flex-col items-end gap-2 mt-6 text-sm sm:text-base">
             <p className="text-gray-700">
               Subtotal:{" "}
@@ -391,7 +389,6 @@ function Clientform() {
         </div>
       </div>
 
-      {/* Hidden Printable Invoice */}
       <div
         ref={printRef}
         style={{
@@ -427,7 +424,6 @@ function Clientform() {
           </div>
         </div>
 
-        {/* Client Info */}
         <div
           style={{
             display: "flex",
@@ -450,7 +446,6 @@ function Clientform() {
           </div>
         </div>
 
-        {/* Items Table */}
         <table
           style={{
             width: "100%",
@@ -494,7 +489,6 @@ function Clientform() {
           </tbody>
         </table>
 
-        {/* Totals Section */}
         <div
           style={{
             textAlign: "right",
@@ -520,7 +514,6 @@ function Clientform() {
           </p>
         </div>
 
-        {/* Footer */}
         <div
           style={{
             marginTop: "50px",
