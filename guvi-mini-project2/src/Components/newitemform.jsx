@@ -12,22 +12,24 @@ function Newitemform({ item, onChange, onRemove, onSave }) {
   };
 
   return (
-    <div>
-      <div className="flex flex-row justify-between gap-10 pl-10 pt-5 pb-5">
+    <div className="w-full">
+      <div className="flex flex-col sm:flex-row justify-between gap-4 sm:gap-6 p-4">
+        {/* Product */}
         <input
           value={item.description}
           onChange={(e) => onChange(item.id, "description", e.target.value)}
-          className="w-[270px] h-[50px] border border-gray-400 p-3 rounded-md"
-          placeholder="Description"
+          className="w-full sm:w-[220px] h-[50px] border border-gray-400 p-3 rounded-md"
+          placeholder="Product"
         />
 
-        <div className="flex flex-row justify-between w-[460px] h-[50px] items-center">
+        {/* Qty / Rate / Amount */}
+        <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center gap-3 w-full">
           <input
             value={item.qty}
             onChange={(e) => onChange(item.id, "qty", e.target.value)}
             type="number"
             min="0"
-            className="w-[80px] h-[50px] border border-gray-400 p-3 rounded-md"
+            className="w-full sm:w-[80px] h-[50px] border border-gray-400 p-3 rounded-md"
             placeholder="Qty"
           />
           <input
@@ -35,29 +37,30 @@ function Newitemform({ item, onChange, onRemove, onSave }) {
             onChange={(e) => onChange(item.id, "rate", e.target.value)}
             type="number"
             min="0"
-            className="w-[120px] h-[50px] border border-gray-400 p-3 rounded-md"
+            className="w-full sm:w-[120px] h-[50px] border border-gray-400 p-3 rounded-md"
             placeholder="Unit Rate"
           />
           <input
             value={Number.isFinite(amount) ? amount : ""}
             readOnly
-            className="w-[120px] h-[50px] border border-gray-400 p-3 rounded-md bg-gray-100"
+            className="w-full sm:w-[120px] h-[50px] border border-gray-400 p-3 rounded-md bg-gray-100"
             placeholder="Amount"
           />
         </div>
 
-        <div className="flex flex-row justify-around items-center w-[180px] gap-2 mr-3">
+        {/* Buttons */}
+        <div className="flex flex-row justify-around sm:justify-start items-center w-full sm:w-[180px] gap-2">
           <button
             type="button"
             onClick={handleSave}
-            className="flex-1 bg-sky-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-sky-600 transition"
+            className="flex-1 bg-sky-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-sky-600 transition"
           >
             Add
           </button>
           <button
             type="button"
             onClick={() => onRemove(item.id)}
-            className="flex-1 bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition"
+            className="flex-1 bg-red-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-600 transition"
           >
             Cancel
           </button>

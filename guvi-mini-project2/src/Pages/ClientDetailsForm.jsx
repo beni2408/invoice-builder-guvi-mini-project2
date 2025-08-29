@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import Newitemform from "../Components/newitemform";
 import html2pdf from "html2pdf.js";
 import Sign from "../assets/Sign.png";
 
@@ -16,6 +15,7 @@ function Clientform() {
     setInvoiceNo(uniqueNo);
   }, []);
 
+  // ===== Items state & logic (unchanged) =====
   const [items, setItems] = useState([]);
 
   const handleAddRow = () => {
@@ -153,15 +153,15 @@ function Clientform() {
       {/* Main Builder UI */}
       <div
         ref={invoiceRef}
-        className="flex flex-col justify-center w-full h-full items-start px-20 pt-12 bg-gradient-to-br from-gray-50 to-gray-100"
+        className="flex flex-col justify-center w-full h-full items-start px-4 sm:px-10 md:px-20 pt-6 sm:pt-10 md:pt-12 bg-gradient-to-br from-gray-50 to-gray-100"
       >
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-6 tracking-tight">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-sky-500 to-indigo-600 mb-6 tracking-tight">
           Invoice Builder
         </h1>
 
-        <div className="shadow-2xl rounded-2xl w-full bg-white/90 backdrop-blur-lg p-10 space-y-10 border border-gray-200">
+        <div className="shadow-2xl rounded-2xl w-full bg-white/90 backdrop-blur-lg p-6 sm:p-8 md:p-10 space-y-8 md:space-y-10 border border-gray-200">
           {/* Client Details */}
-          <div className="grid grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-semibold text-gray-600">
                 Client Name
@@ -181,8 +181,9 @@ function Clientform() {
               <input
                 type="text"
                 value={invoiceNo}
-                readOnly
-                className="mt-2 w-full h-12 border border-gray-200 px-4 rounded-xl bg-gray-100 text-gray-500 shadow-inner"
+                readOnly // ✅ prevents manual editing
+                className="mt-2 w-full h-12 border border-gray-300 px-4 rounded-xl shadow-sm bg-gray-100 cursor-not-allowed"
+                placeholder="Auto-generated"
               />
             </div>
             <div>
@@ -240,58 +241,141 @@ function Clientform() {
             <p className="text-lg font-semibold text-gray-700">Items</p>
 
             <div className="flex flex-col border border-gray-200 rounded-xl overflow-hidden shadow-md">
-              {/* Header */}
-              <div className="bg-gradient-to-r from-sky-50 to-indigo-50 px-6 py-3 flex justify-between items-center text-gray-700 font-semibold">
-                <p className="flex-1">Description</p>
-                <div className="flex flex-row justify-around flex-[2]">
-                  <p>Quantity</p>
-                  <p>Unit Rate</p>
-                  <p>Amount</p>
+              {/* Header – 12-col grid for perfect alignment */}
+              <div className="bg-gradient-to-r from-sky-50 to-indigo-50 px-4 sm:px-6 py-3 text-gray-700 font-semibold text-sm sm:text-base">
+                <div className="hidden sm:grid grid-cols-12 gap-4 items-center">
+                  <p className="col-span-5">Product</p>
+                  <p className="col-span-2">Quantity</p>
+                  <p className="col-span-2">Unit Rate</p>
+                  <p className="col-span-3">Amount / Actions</p>
                 </div>
-                <div className="w-24"></div>
+                {/* Mobile header hint */}
+                <div className="sm:hidden">Add / Edit Items</div>
               </div>
 
+              {/* Rows */}
               {items.map((it) =>
                 it.isEditing ? (
-                  <Newitemform
-                    key={it.id}
-                    item={it}
-                    onChange={handleChangeItem}
-                    onRemove={handleRemoveItem}
-                    onSave={handleSaveItem}
-                  />
-                ) : (
+                  // ===== Inline "Newitemform" (same logic, responsive) =====
                   <div
                     key={it.id}
-                    className="flex flex-row justify-between px-6 py-4 border-t border-gray-100 hover:bg-gray-50 transition"
+                    className="px-4 sm:px-6 py-4 border-t bg-white"
                   >
-                    <p className="flex-1">{it.description}</p>
-                    <div className="flex flex-row justify-around flex-[2]">
-                      <p>{it.qty}</p>
-                      <p>{it.rate}</p>
-                      <p>{Number(it.qty) * Number(it.rate)}</p>
+                    {/* Mobile: stacked; ≥sm: aligned to header grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center">
+                      {/* Product */}
+                      <input
+                        value={it.description}
+                        onChange={(e) =>
+                          handleChangeItem(it.id, "description", e.target.value)
+                        }
+                        className="col-span-1 sm:col-span-5 h-[50px] border border-gray-300 p-3 rounded-md w-full"
+                        placeholder="Product"
+                      />
+
+                      {/* Qty */}
+                      <input
+                        value={it.qty}
+                        onChange={(e) =>
+                          handleChangeItem(it.id, "qty", e.target.value)
+                        }
+                        type="number"
+                        min="0"
+                        className="col-span-1 sm:col-span-2 h-[50px] border border-gray-300 p-3 rounded-md w-full"
+                        placeholder="Qty"
+                      />
+
+                      {/* Rate */}
+                      <input
+                        value={it.rate}
+                        onChange={(e) =>
+                          handleChangeItem(it.id, "rate", e.target.value)
+                        }
+                        type="number"
+                        min="0"
+                        className="col-span-1 sm:col-span-2 h-[50px] border border-gray-300 p-3 rounded-md w-full"
+                        placeholder="Unit Rate"
+                      />
+
+                      {/* Amount (read-only) */}
+                      <input
+                        value={
+                          Number.isFinite(Number(it.qty) * Number(it.rate))
+                            ? Number(it.qty) * Number(it.rate)
+                            : ""
+                        }
+                        readOnly
+                        className="col-span-1 sm:col-span-3 h-[50px] border border-gray-300 p-3 rounded-md bg-gray-100 w-full"
+                        placeholder="Amount"
+                      />
+
+                      {/* Actions */}
+                      <div className="col-span-1 sm:col-span-12 flex gap-2 sm:justify-end mt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!it.description || !it.qty || !it.rate) {
+                              alert(
+                                "Please fill in all fields before adding the item."
+                              );
+                              return;
+                            }
+                            handleSaveItem(it.id);
+                          }}
+                          className="bg-sky-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-sky-600 transition"
+                        >
+                          Add
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(it.id)}
+                          className="bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600 transition"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex gap-2 w-24 ">
-                      <button
-                        onClick={() => handleEditItem(it.id)}
-                        className="flex-1 bg-sky-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-sky-600 transition"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleRemoveItem(it.id)}
-                        className="flex-1 bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition "
-                      >
-                        Delete
-                      </button>
+                  </div>
+                ) : (
+                  // ===== Display row – perfectly aligned under header =====
+                  <div
+                    key={it.id}
+                    className="px-4 sm:px-6 py-4 border-t hover:bg-gray-50 transition"
+                  >
+                    <div className="grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-4 items-center">
+                      <p className="col-span-1 sm:col-span-5 break-words">
+                        {it.description}
+                      </p>
+                      <p className="col-span-1 sm:col-span-2">{it.qty}</p>
+                      <p className="col-span-1 sm:col-span-2">{it.rate}</p>
+                      <div className="col-span-1 sm:col-span-3 flex flex-col sm:flex-row sm:items-center gap-2">
+                        <p className="sm:flex-1">
+                          {Number(it.qty) * Number(it.rate)}
+                        </p>
+                        <div className="flex gap-2 sm:w-auto w-full">
+                          <button
+                            onClick={() => handleEditItem(it.id)}
+                            className="flex-1 sm:flex-none bg-sky-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-sky-600 transition"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleRemoveItem(it.id)}
+                            className="flex-1 sm:flex-none bg-red-500 text-white px-3 py-2 rounded-lg text-sm hover:bg-red-600 transition"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 )
               )}
 
+              {/* Add Item button */}
               <button
                 onClick={handleAddRow}
-                className="self-start mt-4 ml-6 bg-gradient-to-r from-sky-500 to-indigo-500 text-white px-6 py-2 rounded-xl shadow hover:scale-105 transform transition mb-5"
+                className="self-start mt-4 ml-4 sm:ml-6 bg-gradient-to-r from-sky-500 to-indigo-500 text-white px-4 sm:px-6 py-2 rounded-xl shadow hover:scale-105 transform transition mb-5"
               >
                 + Add Item
               </button>
@@ -299,7 +383,7 @@ function Clientform() {
           </div>
 
           {/* Totals + Buttons */}
-          <div className="flex flex-col items-end gap-2 mt-6">
+          <div className="flex flex-col items-end gap-2 mt-6 text-sm sm:text-base">
             <p className="text-gray-700">
               Subtotal:{" "}
               <span className="font-bold">₹{subtotal.toFixed(2)}</span>
@@ -307,12 +391,12 @@ function Clientform() {
             <p className="text-gray-700">
               Tax (18%): <span className="font-bold">₹{tax.toFixed(2)}</span>
             </p>
-            <p className="text-xl font-semibold">
+            <p className="text-lg sm:text-xl font-semibold">
               Grand Total:{" "}
               <span className="text-green-600">₹{grandTotal.toFixed(2)}</span>
             </p>
 
-            <div className="flex gap-4 mt-4">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-4 w-full sm:w-auto">
               <button
                 onClick={handleSave}
                 className="bg-sky-500 text-white px-6 py-2 rounded-xl shadow hover:bg-sky-600 transition"
@@ -489,7 +573,6 @@ function Clientform() {
               src={Sign}
               alt=""
             />
-
             <p>Signature:Jascar Benish</p>
           </div>
         </div>
