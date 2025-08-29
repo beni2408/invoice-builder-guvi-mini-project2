@@ -3,6 +3,14 @@ import React from "react";
 function Newitemform({ item, onChange, onRemove, onSave }) {
   const amount = Number(item.qty || 0) * Number(item.rate || 0);
 
+  const handleSave = () => {
+    if (!item.description || !item.qty || !item.rate) {
+      alert("Please fill in all fields before adding the item.");
+      return;
+    }
+    onSave(item.id);
+  };
+
   return (
     <div>
       <div className="flex flex-row justify-between gap-10 pl-10 pt-5 pb-5">
@@ -38,18 +46,18 @@ function Newitemform({ item, onChange, onRemove, onSave }) {
           />
         </div>
 
-        <div className="flex flex-row justify-around items-center w-[180px]">
+        <div className="flex flex-row justify-around items-center w-[180px] gap-2 mr-3">
           <button
             type="button"
-            onClick={() => onSave(item.id)}
-            className="w-[80px] h-[30px] border p-3 rounded-md bg-blue-800 text-white flex flex-row justify-center items-center"
+            onClick={handleSave}
+            className="flex-1 bg-sky-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-sky-600 transition"
           >
             Add
           </button>
           <button
             type="button"
             onClick={() => onRemove(item.id)}
-            className="w-[80px] h-[30px] border p-3 rounded-md bg-red-500 text-white flex flex-row justify-center items-center"
+            className="flex-1 bg-red-500 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-600 transition"
           >
             Cancel
           </button>
