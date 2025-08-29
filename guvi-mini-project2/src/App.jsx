@@ -1,5 +1,5 @@
 import React from "react";
-import Clientform from "./Components/ClientDetailsForm";
+import Clientform from "./Pages/ClientDetailsForm";
 // import "./index.css";
 import "./App.css";
 
