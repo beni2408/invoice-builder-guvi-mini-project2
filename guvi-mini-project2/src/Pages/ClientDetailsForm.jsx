@@ -342,7 +342,7 @@ function Clientform() {
                   </div>
                 )
               )}
-              {/* done changes  */}
+
               <button
                 onClick={handleAddRow}
                 className="self-start mt-4 ml-4 sm:ml-6 bg-gradient-to-r from-sky-500 to-indigo-500 text-white px-4 sm:px-6 py-2 rounded-xl shadow hover:scale-105 transform transition mb-5"
@@ -537,7 +537,7 @@ function Clientform() {
               src={Sign}
               alt=""
             />
-            <p>Signature:Jascar Benish</p>
+            <p>Signature</p>
           </div>
         </div>
       </div>
