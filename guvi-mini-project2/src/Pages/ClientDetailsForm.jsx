@@ -133,7 +133,7 @@ function Clientform() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div>
               <label className="block text-sm font-semibold text-gray-600">
-                Client Name
+                Customer Name
               </label>
               <input
                 type="text"
@@ -174,7 +174,7 @@ function Clientform() {
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 className="mt-2 w-full p-3 border rounded-xl resize-y shadow-sm focus:ring-2 focus:ring-sky-400 focus:outline-none"
-                placeholder="Enter client address"
+                placeholder="Enter customer address"
                 rows={3}
                 required
               ></textarea>
